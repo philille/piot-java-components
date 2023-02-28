@@ -22,8 +22,10 @@ public class ActuatorData extends BaseIotData implements Serializable
 	
 	
 	// private var's
-	
-    
+	private int     command      = ConfigConst.DEFAULT_COMMAND;
+	private float   value        = ConfigConst.DEFAULT_VAL;
+	private boolean isResponse   = false;
+	private String  stateData    = ""; 
     
 	// constructors
 	

@@ -22,6 +22,9 @@ public class SystemPerformanceData extends BaseIotData implements Serializable
 	
 	
 	// private var's
+	private float cpuUtil  = ConfigConst.DEFAULT_VAL;
+	private float diskUtil = ConfigConst.DEFAULT_VAL;
+	private float memUtil  = ConfigConst.DEFAULT_VAL;
 	
     
 	// constructors
@@ -29,6 +32,8 @@ public class SystemPerformanceData extends BaseIotData implements Serializable
 	public SystemPerformanceData()
 	{
 		super();
+		
+		super.setName(ConfigConst.SYS_PERF_DATA);
 	}
 	
 	
