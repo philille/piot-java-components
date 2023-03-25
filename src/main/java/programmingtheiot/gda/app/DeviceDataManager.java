@@ -55,6 +55,7 @@ public class DeviceDataManager implements IDataMessageListener {
     private IPersistenceClient persistenceClient = null;
     private CoapServerGateway coapServer = null;
     private SystemPerformanceManager sysPerfMgr = null;
+    private IActuatorDataListener actuatorDataListener = null;
 
     // constructors
 
@@ -142,15 +143,18 @@ public class DeviceDataManager implements IDataMessageListener {
     		
     		if (data.hasError()) {
     			_Logger.warning("Error flag set for SystemPerformanceData instance.");
-    		}
-    		
+    		} 
     		return true;
     	} else {
     		return false;
     	}
     }
 
-    public void setActuatorDataListener(String name, IActuatorDataListener listener) {
+    public void setActuatorDataListener(String name, IActuatorDataListener listener)
+    {
+    	if (listener != null) { 
+    		this.actuatorDataListener = listener;
+    	}
     }
 
     public void startManager()
@@ -179,6 +183,13 @@ public class DeviceDataManager implements IDataMessageListener {
     			// TODO: take appropriate action
     		}
     	}
+    	if (this.enableCoapServer && this.coapServer != null) {
+    		if (this.coapServer.startServer()) {
+    			_Logger.info("CoAP server started.");
+    		} else {
+    			_Logger.severe("Failed to start CoAP server. Check log file for details.");
+    		}
+    	}
     }
 
     public void stopManager()
@@ -202,6 +213,13 @@ public class DeviceDataManager implements IDataMessageListener {
     			_Logger.severe("Failed to disconnect MQTT client from broker.");
     			
     			// TODO: take appropriate action
+    		}
+    	}
+    	if (this.enableCoapServer && this.coapServer != null) {
+    		if (this.coapServer.stopServer()) {
+    			_Logger.info("CoAP server stopped.");
+    		} else {
+    			_Logger.severe("Failed to stop CoAP server. Check log file for details.");
     		}
     	}
     }
@@ -245,6 +263,9 @@ public class DeviceDataManager implements IDataMessageListener {
     	
     	if (this.enablePersistenceClient) {
     		// TODO: implement this as an optional exercise in Lab Module 5
+    	}
+    	if (this.enableCoapServer) {
+    		this.coapServer = new CoapServerGateway(this);
     	}
     }
     
