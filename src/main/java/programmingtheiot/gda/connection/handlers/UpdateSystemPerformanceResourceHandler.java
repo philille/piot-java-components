@@ -56,13 +56,7 @@ public class UpdateSystemPerformanceResourceHandler extends CoapResource
 				String jsonData = new String(context.getRequestPayload());
 				
 				SystemPerformanceData sysPerfData =
-					DataUtil.getInstance().jsonToSystemPerformanceData(jsonData);
-				
-				// TODO: Choose the following (but keep it idempotent!) 
-				//   1) Check MID to see if it’s repeated for some reason
-				//      - optional, as the underlying lib should handle this
-				//   2) Cache the previous update – is the PAYLOAD repeated?
-				//   2) Delegate the data check to this.dataMsgListener
+					DataUtil.getInstance().jsonToSystemPerformanceData(jsonData); 
 				
 				this.dataMsgListener.handleSystemPerformanceMessage(
 					ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, sysPerfData);
@@ -87,6 +81,7 @@ public class UpdateSystemPerformanceResourceHandler extends CoapResource
 		
 		context.respond(code, msg);
 	}
+	//Implement POST method
 	public void handlePOST(CoapExchange context) {
         // TODO Auto-generated method stub
         ResponseCode code = ResponseCode.NOT_ACCEPTABLE;
@@ -115,6 +110,22 @@ public class UpdateSystemPerformanceResourceHandler extends CoapResource
                 "Update telemetry data request handled: " + super.getName(); 
         context.respond(code, msg);
     }
+	
+	//Implement GET method
+    @Override
+    public void handleGET(CoapExchange exchange) {
+        ResponseCode code = ResponseCode.CONTENT;
+        exchange.accept();
+        
+        SystemPerformanceData spd = new SystemPerformanceData();
+        String spdStr = DataUtil.getInstance().systemPerformanceDataToJson(spd);
+        
+        _Logger.info("Got a request from the client.");
+        
+        exchange.respond(code, spdStr);
+    }
+    
+	//Implement DELETE method    
 	public void handleDELETE(CoapExchange exchange) {
         // TODO Auto-generated method stub
         super.handleDELETE(exchange);
