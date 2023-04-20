@@ -27,7 +27,9 @@ import programmingtheiot.data.SystemPerformanceData;
 import programmingtheiot.data.SystemStateData;
 
 import programmingtheiot.gda.connection.CloudClientConnector;
+import programmingtheiot.gda.connection.CoapClientConnector;
 import programmingtheiot.gda.connection.CoapServerGateway;
+import programmingtheiot.gda.connection.ICloudClient;
 import programmingtheiot.gda.connection.IPersistenceClient;
 import programmingtheiot.gda.connection.IPubSubClient;
 import programmingtheiot.gda.connection.IRequestResponseClient;
@@ -49,16 +51,18 @@ public class DeviceDataManager implements IDataMessageListener {
 
     private boolean enableMqttClient = true;
     private boolean enableCoapServer = false;
+    private boolean enableCoapClient = false;
     private boolean enableCloudClient = false;
     private boolean enablePersistenceClient = false;
     private boolean enableSystemPerf = false;
 
     private IPubSubClient mqttClient = null;
-    private IPubSubClient cloudClient = null;
+    private ICloudClient cloudClient = null;
     private IPersistenceClient persistenceClient = null;
     private CoapServerGateway coapServer = null;
     private SystemPerformanceManager sysPerfMgr = null;
     private IActuatorDataListener actuatorDataListener = null;
+    private CoapClientConnector coapClient = null;
     
     //Class-scoped threshold crossing properties:
     private ActuatorData   latestHumidifierActuatorData = null;
@@ -91,6 +95,9 @@ public class DeviceDataManager implements IDataMessageListener {
     	this.enableCoapServer =
     		configUtil.getBoolean(
     			ConfigConst.GATEWAY_DEVICE, ConfigConst.ENABLE_COAP_SERVER_KEY);
+    	
+    	this.enableCoapClient = 
+    		    configUtil.getBoolean(ConfigConst.GATEWAY_DEVICE, ConfigConst.ENABLE_COAP_CLIENT_KEY);
     	
     	this.enableCloudClient =
     		configUtil.getBoolean(
@@ -156,45 +163,68 @@ public class DeviceDataManager implements IDataMessageListener {
     @Override
     public boolean handleIncomingMessage(ResourceNameEnum resourceName, String msg)
     {
-    	if (msg != null) {
-    		_Logger.info("Handling incoming generic message: " + msg);
-    		
-    		return true;
+    	if (resourceName != null && msg != null) {
+    		try {
+    			if (resourceName == ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE) {
+    				_Logger.info("Handling incoming ActuatorData message: " + msg);
+    				
+    				// NOTE: it may seem wasteful to convert to ActuatorData and back while
+    				// the JSON data is already available; however, this provides a validation
+    				// scheme to ensure the data is actually an 'ActuatorData' instance
+    				// prior to sending off to the CDA
+    				ActuatorData ad = DataUtil.getInstance().jsonToActuatorData(msg);
+    				String jsonData = DataUtil.getInstance().actuatorDataToJson(ad);
+    				
+    				if (this.mqttClient != null) {
+    					// TODO: retrieve the QoS level from the configuration file
+    					_Logger.fine("Publishing data to MQTT broker: " + jsonData);
+    					return this.mqttClient.publishMessage(resourceName, jsonData, 0);
+    				}
+    				
+    				// TODO: If the GDA is hosting a CoAP server (or a CoAP client that
+    				// will connect to the CDA's CoAP server), you can add that logic here
+    				// in place of the MQTT client or in addition
+    				
+    			} else {
+    				_Logger.warning("Failed to parse incoming message. Unknown type: " + msg);
+    				
+    				return false;
+    			}
+    		} catch (Exception e) {
+    			_Logger.log(Level.WARNING, "Failed to process incoming message for resource: " + resourceName, e);
+    		}
     	} else {
-    		return false;
+    		_Logger.warning("Incoming message has no data. Ignoring for resource: " + resourceName);
     	}
+    	
+    	return false;
     }
 
     @Override
-    public boolean handleSensorMessage(ResourceNameEnum resourceName, SensorData data)
-    {
-    	if (data != null) {
-    		_Logger.fine("Handling sensor message: " + data.getName());
-    		
-    		if (data.hasError()) {
-    			_Logger.warning("Error flag set for SensorData instance.");
-    		}
-    		
-    		String jsonData = DataUtil.getInstance().sensorDataToJson(data);
-    		
-    		_Logger.fine("JSON [SensorData] -> " + jsonData);
-    		
-    		// TODO: retrieve this from config file
-    		int qos = ConfigConst.DEFAULT_QOS;
-    		
-    		if (this.enablePersistenceClient && this.persistenceClient != null) {
-    			this.persistenceClient.storeData(resourceName.getResourceName(), qos, data);
-    		}
-    		
-    		this.handleIncomingDataAnalysis(resourceName, data);
-    		
-    		this.handleUpstreamTransmission(resourceName, jsonData, qos);
-    		
-    		return true;
-    	} else {
-    		return false;
-    	}
-    }
+	public boolean handleSensorMessage(ResourceNameEnum resourceName, SensorData data)
+	{
+	    if (data != null) {
+	        _Logger.info("Handling sensor message: " + data.getName());
+	        
+	        if (data.hasError()) {
+	            _Logger.warning("Error flag set for SensorData instance.");
+	        }
+	        String jsonData = DataUtil.getInstance().sensorDataToJson(data);
+	        
+	        _Logger.info("JSON [SensorData] -> " + jsonData);
+	        if (this.cloudClient != null) {
+	            // TODO: handle any failures
+	            if (this.cloudClient.sendEdgeDataToCloud(resourceName, data)) {
+	                _Logger.fine("Sent SensorData upstream to CSP.");
+	                
+	            }
+	        }
+	        
+	        return true;
+	    } else {
+	        return false;
+	    }
+	}
     
     private void handleUpstreamTransmission(ResourceNameEnum resourceName, String jsonData, int qos) {
         if (this.enableMqttClient) {
@@ -214,7 +244,15 @@ public class DeviceDataManager implements IDataMessageListener {
     		
     		if (data.hasError()) {
     			_Logger.warning("Error flag set for SystemPerformanceData instance.");
-    		} 
+    		}
+    		
+    		if (this.cloudClient != null) {
+    			// TODO: handle any failures
+    			if (this.cloudClient.sendEdgeDataToCloud(resourceName, data)) {
+    				_Logger.fine("Sent SystemPerformanceData upstream to CSP.");
+    			}
+    		}
+    		
     		return true;
     	} else {
     		return false;
@@ -261,6 +299,14 @@ public class DeviceDataManager implements IDataMessageListener {
     			_Logger.severe("Failed to start CoAP server. Check log file for details.");
     		}
     	}
+    	
+    	if (this.enableCloudClient && this.cloudClient != null) {
+		    if (this.cloudClient.connectClient()) {
+		        _Logger.info("Cloud Client Connected");
+		    }else {
+		        _Logger.severe("Failed to Connect Cloud Client.Check log file for details.");
+		    }
+		}
     }
 
     public void stopManager()
@@ -293,6 +339,11 @@ public class DeviceDataManager implements IDataMessageListener {
     			_Logger.severe("Failed to stop CoAP server. Check log file for details.");
     		}
     	}
+    	if (this.cloudClient.disconnectClient()) {
+            _Logger.info("Cloud Client Disconnected.");
+        }else {
+            _Logger.severe("Failed to disconnect Cloud Client.Check log file for details.");
+        }
     }
 
 
@@ -308,36 +359,39 @@ public class DeviceDataManager implements IDataMessageListener {
     {
     	ConfigUtil configUtil = ConfigUtil.getInstance();
     	
-    	this.enableSystemPerf =
-    		configUtil.getBoolean(ConfigConst.GATEWAY_DEVICE,  ConfigConst.ENABLE_SYSTEM_PERF_KEY);
-    	
-    	if (this.enableSystemPerf) {
-    		this.sysPerfMgr = new SystemPerformanceManager();
-    		this.sysPerfMgr.setDataMessageListener(this);
-    	}
-    	
-    	// NOTE: This is new - creating the MQTT client connector instance
-    	if (this.enableMqttClient) {
-    		this.mqttClient = new MqttClientConnector();
-    		
-    		// NOTE: The next line isn't technically needed until Lab Module 10
-    		this.mqttClient.setDataMessageListener(this);
-    	}
-    	
-    	if (this.enableCoapServer) {
-    		// TODO: implement this in Lab Module 8
-    	}
-    	
-    	if (this.enableCloudClient) {
-    		// TODO: implement this in Lab Module 10
-    	}
-    	
-    	if (this.enablePersistenceClient) {
-    		// TODO: implement this as an optional exercise in Lab Module 5
-    	}
-    	if (this.enableCoapServer) {
-    		this.coapServer = new CoapServerGateway(this);
-    	}
+		this.enableSystemPerf =
+				configUtil.getBoolean(ConfigConst.GATEWAY_DEVICE,  ConfigConst.ENABLE_SYSTEM_PERF_KEY);
+			
+			if (this.enableSystemPerf) {
+				this.sysPerfMgr = new SystemPerformanceManager();
+				this.sysPerfMgr.setDataMessageListener(this);
+			}
+			
+			if (this.enableMqttClient) {
+				// TODO: implement this in Lab Module 7
+			    this.mqttClient = new MqttClientConnector();
+		        
+		        // NOTE: The next line isn't technically needed until Lab Module 10
+		        this.mqttClient.setDataMessageListener(this);
+			}
+			
+			if (this.enableCoapServer) {
+				// TODO: implement this in Lab Module 8
+			    this.coapServer = new CoapServerGateway(this);
+			}
+			
+			if (this.enableCoapClient) {
+			    this.coapClient = new CoapClientConnector();
+			}
+			
+			if (this.enableCloudClient) {
+				// TODO: implement this in Lab Module 10
+			    this.cloudClient = new CloudClientConnector();
+			}
+			
+			if (this.enablePersistenceClient) {
+				// TODO: implement this as an optional exercise in Lab Module 5
+			}
     }
     
     

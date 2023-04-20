@@ -11,17 +11,16 @@
 # Cloud client configuration information
 #
 [Cloud.GatewayService]
-credFile       = ./cred/PiotCloudCred.props
-certFile       = ./cert/PiotCloudCert.pem
-host           = localhost
+credFile       = /Users/zhanwang/programmingtheiot/cred/UbidotsCloudCred.props
+certFile       = /Users/zhanwang/programmingtheiot/cert/UbidotsCloudCert.pem
+host           = industrial.api.ubidots.com
 port           = 1883
 securePort     = 8883
 defaultQoS     = 0
-keepAlive      = 60
-enableAuth     = True
+keepAlive      = 30
 enableCrypt    = True
-baseUrl        = 
-baseTopic      = 
+baseUrl        = https://things.ubidots.com/api/v1.6/
+baseTopic      = /v1.6/devices/
 
 #
 # SMTP client configuration information
@@ -38,15 +37,15 @@ enableCrypt    = True
 # MQTT client configuration information
 #
 [Mqtt.GatewayService]
-credFile       = ./cred/PiotMqttCred.props
-certFile       = ./cert/PiotMqttLocalCertFile.pem
+credFile       = /Users/zhanwang/programmingtheiot/cred/PiotMqttCred.props
+certFile       = /Users/zhanwang/programmingtheiot/cert/server.crt
 host           = localhost
 port           = 1883
 securePort     = 8883
 defaultQoS     = 0
 keepAlive      = 60
 enableAuth     = False
-enableCrypt    = False
+enableCrypt    = True
 
 #
 # CoAP client and server configuration information
@@ -70,8 +69,8 @@ enableLogging           = True
 pollCycleSecs           = 60
 enableMqttClient        = True
 enableCoapServer        = True
-enableCoapClient        = False
-enableCloudClient       = False
+enableCoapClient        = True
+enableCloudClient       = True
 enableSmtpClient        = False
 enablePersistenceClient = False
 enableSystemPerformance = False
@@ -83,7 +82,7 @@ testEmptyApp            = False
 handleHumidityChangeOnDevice = True
 
 # min seconds between readings before triggering actuation event
-humidityMaxTimePastThreshold = 300
+humidityMaxTimePastThreshold = 10
 
 # ideal average humidity level (% relative)
 nominalHumiditySetting       = 40.0

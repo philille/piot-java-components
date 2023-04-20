@@ -43,12 +43,11 @@ public class ActuatorData extends BaseIotData implements Serializable
 	
 	public int getCommand()
 	{
-		return 0;
+		return command;
 	}
 	
-	public float getValue()
-	{
-		return 0.0f;
+	public float getValue() {
+		return value;
 	}
 	
 	public boolean isResponseFlagEnabled()
@@ -60,12 +59,25 @@ public class ActuatorData extends BaseIotData implements Serializable
 	{
 	}
 	
-	public void setCommand(int command)
-	{
+	public void setCommand(int command) {
+		this.command = command;
 	}
 	
-	public void setValue(float val)
-	{
+	public void setValue(float value) {
+		this.value = value;
+	}
+	
+	private String getStateData() {
+		// TODO Auto-generated method stub
+		return stateData;
+	} 
+	
+	public void setStateData(String stateData) {
+		this.stateData = stateData;
+	}
+	
+	public boolean isResponse() {
+		return isResponse;
 	}
 	
 	/**
@@ -92,8 +104,19 @@ public class ActuatorData extends BaseIotData implements Serializable
 	/* (non-Javadoc)
 	 * @see programmingtheiot.data.BaseIotData#handleUpdateData(programmingtheiot.data.BaseIotData)
 	 */
+
 	protected void handleUpdateData(BaseIotData data)
 	{
+		if (data instanceof ActuatorData) {
+			ActuatorData ad = (ActuatorData) data;
+			this.setCommand(ad.getCommand());
+			this.setStateData(ad.getStateData());
+			this.setValue(ad.getValue());
+			if (ad.isResponse()) {
+				this.isResponse = true;
+			}
+		}
 	}
+
 	
 }
