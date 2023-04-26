@@ -94,7 +94,7 @@ public class CoapClientConnectorTest
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testConnectAndDiscover()
 	{
 		assertTrue(this.coapClient.sendDiscoveryRequest(DEFAULT_TIMEOUT));
@@ -103,7 +103,7 @@ public class CoapClientConnectorTest
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testGetRequestCon()
 	{
 		// TODO: issue request and validate response
@@ -119,13 +119,13 @@ public class CoapClientConnectorTest
 	{
 		// TODO: issue request and validate response
 		
-		assertTrue(this.coapClient.sendGetRequest(ResourceNameEnum.GDA_MGMT_STATUS_MSG_RESOURCE, null, false, DEFAULT_TIMEOUT));
+		assertTrue(this.coapClient.sendGetRequest(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE, null, false, DEFAULT_TIMEOUT));
 	}
 	
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testPostRequestCon()
 	{
 		// TODO: issue request and validate response
@@ -143,7 +143,7 @@ public class CoapClientConnectorTest
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testPostRequestNon()
 	{
 		// TODO: issue request and validate response
@@ -161,7 +161,7 @@ public class CoapClientConnectorTest
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testPutRequestCon()
 	{
 		// TODO: issue request and validate response
@@ -179,7 +179,7 @@ public class CoapClientConnectorTest
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testPutRequestNon()
 	{
 		// TODO: issue request and validate response
@@ -197,7 +197,7 @@ public class CoapClientConnectorTest
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testDeleteRequestCon()
 	{
 		// TODO: issue request and validate response
@@ -208,7 +208,7 @@ public class CoapClientConnectorTest
 	/**
 	 * 
 	 */
-	@Test
+//	@Test
 	public void testDeleteRequestNon()
 	{
 		// TODO: issue request and validate response

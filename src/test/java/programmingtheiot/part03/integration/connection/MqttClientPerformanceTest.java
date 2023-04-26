@@ -70,6 +70,7 @@ public class MqttClientPerformanceTest
 	/**
 	 * Test method for {@link programmingtheiot.gda.connection.MqttClientConnector#connectClient()}.
 	 */
+//	Connect and Disconnect [1]: 416 ms
 	@Test
 	public void testConnectAndDisconnect()
 	{
@@ -87,7 +88,10 @@ public class MqttClientPerformanceTest
 	/**
 	 * Test method for {@link programmingtheiot.gda.connection.MqttClientConnector#publishMessage(programmingtheiot.common.ResourceNameEnum, java.lang.String, int)}.
 	 */
-	@Test
+//	QoS = 0 | msgs = 10000 | payload size = 212 | 
+//	start = 1.66830618E9 | end = 1.66830618E9 | 
+//	elapsed = 1.431
+//	@Test
 	public void testPublishQoS0()
 	{
 		execTestPublish(MAX_TEST_RUNS, 0);
@@ -96,7 +100,10 @@ public class MqttClientPerformanceTest
 	/**
 	 * Test method for {@link programmingtheiot.gda.connection.MqttClientConnector#publishMessage(programmingtheiot.common.ResourceNameEnum, java.lang.String, int)}.
 	 */
-	@Test
+//	QoS = 1 | msgs = 10000 | payload size = 212 | 
+//    start = 1.6683063E9 | end = 1.6683063E9 | 
+//    elapsed = 2.487
+//	@Test
 	public void testPublishQoS1()
 	{
 		execTestPublish(MAX_TEST_RUNS, 1);
@@ -105,7 +112,10 @@ public class MqttClientPerformanceTest
 	/**
 	 * Test method for {@link programmingtheiot.gda.connection.MqttClientConnector#publishMessage(programmingtheiot.common.ResourceNameEnum, java.lang.String, int)}.
 	 */
-	@Test
+//	QoS = 2 | msgs = 10000 | payload size = 212 | 
+//  start = 1.6683063E9 | end = 1.6683063E9 | 
+//  elapsed = 3.937
+//	@Test
 	public void testPublishQoS2()
 	{
 		execTestPublish(MAX_TEST_RUNS, 2);
@@ -128,7 +138,7 @@ public class MqttClientPerformanceTest
 		
 		long startMillis = System.currentTimeMillis();
 		
-		for (int sequenceNo = 0; sequenceNo < maxTestRuns; sequenceNo++) {
+		for (int sequenceNo = 1; sequenceNo <= maxTestRuns; sequenceNo++) {
 			this.mqttClient.publishMessage(ResourceNameEnum.CDA_MGMT_STATUS_CMD_RESOURCE, payload, qos);
 		}
 		
@@ -137,7 +147,13 @@ public class MqttClientPerformanceTest
 		
 		assertTrue(this.mqttClient.disconnectClient());
 		
-		_Logger.info("Publish message - QoS " + qos + " [" + maxTestRuns + "]: " + elapsedMillis + " ms");
+		String msg =
+			String.format(
+				"\\n\\tTesting Publish: QoS = %s | msgs = %s | payload size = %s | start = %s | end = %s | elapsed = %s",
+				qos, maxTestRuns, payloadLen,
+				(float) startMillis / 1000, (float) endMillis / 1000, (float) elapsedMillis / 1000);
+		
+		_Logger.info(msg);
 	}
 	
 }

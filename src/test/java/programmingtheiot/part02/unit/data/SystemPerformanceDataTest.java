@@ -68,9 +68,9 @@ public class SystemPerformanceDataTest
 		assertEquals(spd.getName(), ConfigConst.SYS_PERF_DATA);
 		assertEquals(spd.getStatusCode(), SystemPerformanceData.DEFAULT_STATUS);
 		
-		assertTrue(spd.getCpuUtilization() == ConfigConst.DEFAULT_VAL);
-		assertTrue(spd.getDiskUtilization() == ConfigConst.DEFAULT_VAL);
-		assertTrue(spd.getMemoryUtilization() == ConfigConst.DEFAULT_VAL);
+		assertTrue(spd.getCpuUtil() == ConfigConst.DEFAULT_VAL);
+		assertTrue(spd.getDiskUtil() == ConfigConst.DEFAULT_VAL);
+		assertTrue(spd.getMemUtil() == ConfigConst.DEFAULT_VAL);
 	}
 	
 	@Test
@@ -83,9 +83,9 @@ public class SystemPerformanceDataTest
 		assertEquals(spd.getName(), DEFAULT_NAME);
 		assertEquals(spd.getStatusCode(), SystemPerformanceData.DEFAULT_STATUS);
 		
-		assertTrue(spd.getCpuUtilization() == DEFAULT_CPU_UTIL_DATA);
-		assertTrue(spd.getDiskUtilization() == DEFAULT_DISK_UTIL_DATA);
-		assertTrue(spd.getMemoryUtilization() == DEFAULT_MEM_UTIL_DATA);
+		assertTrue(spd.getCpuUtil() == DEFAULT_CPU_UTIL_DATA);
+		assertTrue(spd.getDiskUtil() == DEFAULT_DISK_UTIL_DATA);
+		assertTrue(spd.getMemUtil() == DEFAULT_MEM_UTIL_DATA);
 	}
 	
 	@Test
@@ -100,9 +100,9 @@ public class SystemPerformanceDataTest
 		assertEquals(spd.getName(), ConfigConst.SYS_PERF_DATA);
 		assertEquals(spd.getStatusCode(), SystemPerformanceData.DEFAULT_STATUS);
 		
-		assertTrue(spd.getCpuUtilization() == ConfigConst.DEFAULT_VAL);
-		assertTrue(spd.getDiskUtilization() == ConfigConst.DEFAULT_VAL);
-		assertTrue(spd.getMemoryUtilization() == ConfigConst.DEFAULT_VAL);
+		assertTrue(spd.getCpuUtil() == ConfigConst.DEFAULT_VAL);
+		assertTrue(spd.getDiskUtil() == ConfigConst.DEFAULT_VAL);
+		assertTrue(spd.getMemUtil() == ConfigConst.DEFAULT_VAL);
 		
 		spd.updateData(spd2);
 		_Logger.info("Updated second data obj: " + spd2.toString());
@@ -110,9 +110,9 @@ public class SystemPerformanceDataTest
 		assertEquals(spd.getName(), DEFAULT_NAME);
 		assertEquals(spd.getStatusCode(), SystemPerformanceData.DEFAULT_STATUS);
 		
-		assertTrue(spd.getCpuUtilization() == DEFAULT_CPU_UTIL_DATA);
-		assertTrue(spd.getDiskUtilization() == DEFAULT_DISK_UTIL_DATA);
-		assertTrue(spd.getMemoryUtilization() == DEFAULT_MEM_UTIL_DATA);
+		assertTrue(spd.getCpuUtil() == DEFAULT_CPU_UTIL_DATA);
+		assertTrue(spd.getDiskUtil() == DEFAULT_DISK_UTIL_DATA);
+		assertTrue(spd.getMemUtil() == DEFAULT_MEM_UTIL_DATA);
 	}
 	
 	
@@ -123,9 +123,9 @@ public class SystemPerformanceDataTest
 		SystemPerformanceData spd = new SystemPerformanceData();
 		spd.setName(DEFAULT_NAME);
 		
-		spd.setCpuUtilization(DEFAULT_CPU_UTIL_DATA);
-		spd.setDiskUtilization(DEFAULT_DISK_UTIL_DATA);
-		spd.setMemoryUtilization(DEFAULT_MEM_UTIL_DATA);
+		spd.setCpuUtil(DEFAULT_CPU_UTIL_DATA);
+		spd.setDiskUtil(DEFAULT_DISK_UTIL_DATA);
+		spd.setMemUtil(DEFAULT_MEM_UTIL_DATA);
 		
 		return spd;
 	}

@@ -22,6 +22,7 @@ import programmingtheiot.common.ConfigConst;
 import programmingtheiot.common.DefaultDataMessageListener;
 import programmingtheiot.common.ResourceNameEnum;
 import programmingtheiot.data.SensorData;
+import programmingtheiot.data.ActuatorData;
 import programmingtheiot.data.SystemPerformanceData;
 import programmingtheiot.gda.app.DeviceDataManager;
 import programmingtheiot.gda.connection.*;
@@ -72,21 +73,46 @@ public class CloudClientConnectorTest
 	/**
 	 * Test method for {@link programmingtheiot.gda.connection.UbidotsMqttCloudClientConnector#connectClient()}.
 	 */
-//	@Test
-	public void testCloudClientConnectAndDisconnect()
+	@Test
+	public void testPublishSensorDataToCloud()
 	{
 		this.cloudClient.setDataMessageListener(new DefaultDataMessageListener());
 		
 		assertTrue(this.cloudClient.connectClient());
+		 try {
+            // sleep for a few seconds...
+            
+            Thread.sleep(5000L);
+        } catch (Exception e) {
+            // ignore
+        }
 		
-		try {
 			// sleep for a minute or so...
 			
-			Thread.sleep(60000L);
-		} catch (Exception e) {
-			// ignore
-		}
+//			Thread.sleep(60000L);
 		
+		assertTrue(this.cloudClient.subscribeToCloudEvents(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE));
+		for(int i = 0; i < 10; i++) {
+		    float reduce = (float) (Math.random()*10);
+		    
+			SensorData sensorData = new SensorData();
+            sensorData.setValue(62.0f-reduce);
+            sensorData.setName(ConfigConst.TEMP_SENSOR_NAME);
+            
+            SystemPerformanceData sysPerfData = new SystemPerformanceData();
+            sysPerfData.setCpuUtil(35.7f-reduce/10);
+            sysPerfData.setMemUtil(38.8f-reduce/10);
+            
+            assertTrue(this.cloudClient.sendEdgeDataToCloud(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, sensorData));
+            assertTrue(this.cloudClient.sendEdgeDataToCloud(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, sysPerfData));
+            
+            try {
+                Thread.sleep(5000);
+            }catch (Exception e) {
+                
+            }
+		}
+		assertTrue(this.cloudClient.unsubscribeFromCloudEvents(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE));
 		assertTrue(this.cloudClient.disconnectClient());
 		
 		_Logger.info("Test complete.");
@@ -95,21 +121,77 @@ public class CloudClientConnectorTest
 	/**
 	 * Test method
 	 */
-	@Test
-	public void testIntegratedCloudClientConnectAndDisconnect()
+//	@Test
+	public void testSubLEDActuator()
 	{
-		DeviceDataManager ddm = new DeviceDataManager();
-		ddm.startManager();
-		
-		try {
-			// sleep for a minute or so...
-			
-			Thread.sleep(60000L);
-		} catch (Exception e) {
-			// ignore
-		}
-		
-		ddm.stopManager();
+	    this.cloudClient.setDataMessageListener(new DefaultDataMessageListener());
+        
+        assertTrue(this.cloudClient.connectClient());
+        
+        try {
+            // sleep for a few seconds...
+            
+            Thread.sleep(5000L);
+        } catch (Exception e) {
+            // ignore
+        }
+//        send actuator data to cloud
+//        ActuatorData actuatorData = new ActuatorData();
+//        actuatorData.setName(ConfigConst.HVAC_ACTUATOR_NAME);
+//        actuatorData.setTypeID(ConfigConst.HVAC_ACTUATOR_TYPE);
+//        actuatorData.setCommand(ConfigConst.ON_COMMAND);
+//        actuatorData.setValue(0.0f);
+//        actuatorData.setStateData("Nothing to do here...");
+//        assertTrue(this.cloudClient.createCloudResource(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE, actuatorData));
+        try {
+            // sleep for a few seconds...
+            
+            Thread.sleep(5000L);
+        } catch (Exception e) {
+            // ignore
+        }
+        assertTrue(this.cloudClient.subscribeToCloudEvents(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE));
+        try {
+            // sleep for a few seconds...
+            
+            Thread.sleep(5000L);
+        } catch (Exception e) {
+            // ignore
+        }
+        SensorData sensorData = new SensorData();
+        SystemPerformanceData sysPerfData = new SystemPerformanceData();
+        
+            float reduce = (float) (Math.random()*8);
+            
+            sensorData.setValue(72.8f);
+            sensorData.setName(ConfigConst.TEMP_SENSOR_NAME);
+            sensorData.setTypeID(ConfigConst.TEMP_SENSOR_TYPE);
+            
+            
+            sysPerfData.setCpuUtil(35.7f-reduce/8);
+            sysPerfData.setMemUtil(38.8f+reduce/8);
+            
+            assertTrue(this.cloudClient.sendEdgeDataToCloud(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, sensorData));
+            try {
+                // sleep for a few seconds...
+                
+                Thread.sleep(5000L);
+            } catch (Exception e) {
+                // ignore
+            }
+            assertTrue(this.cloudClient.sendEdgeDataToCloud(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, sysPerfData));
+            try {
+                // sleep for a few seconds...
+                
+                Thread.sleep(5000L);
+            } catch (Exception e) {
+                // ignore
+            }
+        
+        
+        assertTrue(this.cloudClient.unsubscribeFromCloudEvents(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE));
+        
+        assertTrue(this.cloudClient.disconnectClient());
 		
 		_Logger.info("Test complete.");
 	}
@@ -123,14 +205,19 @@ public class CloudClientConnectorTest
 		this.cloudClient.setDataMessageListener(new DefaultDataMessageListener());
 		
 		assertTrue(this.cloudClient.connectClient());
+		try {
+            Thread.sleep(6000);
+        }catch(Exception e) {
+            // ignore this
+        }
 		
 		SensorData sensorData = new SensorData();
 		sensorData.setName(ConfigConst.TEMP_SENSOR_NAME);
 		sensorData.setValue(92.0f);
 		
 		SystemPerformanceData sysPerfData = new SystemPerformanceData();
-		sysPerfData.setCpuUtilization(34.7f);
-		sysPerfData.setMemoryUtilization(39.8f);
+		sysPerfData.setCpuUtil(34.7f);
+		sysPerfData.setMemUtil(39.8f);
 		
 		assertTrue(this.cloudClient.subscribeToCloudEvents(ResourceNameEnum.CDA_ACTUATOR_CMD_RESOURCE));
 		

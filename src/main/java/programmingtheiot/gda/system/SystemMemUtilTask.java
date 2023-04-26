@@ -9,12 +9,10 @@
 package programmingtheiot.gda.system;
 
 import java.lang.management.ManagementFactory;
-
 import java.lang.management.MemoryUsage;
+import java.util.logging.Logger;
 
 import programmingtheiot.common.ConfigConst;
-
-import java.util.logging.Logger;
 
 /**
  * Shell representation of class for student implementation.
@@ -22,9 +20,11 @@ import java.util.logging.Logger;
  */
 public class SystemMemUtilTask extends BaseSystemUtilTask
 {
-	// constructors
-	private static final Logger _Logger =
+	// static
+	
+		private static final Logger _Logger =
 			Logger.getLogger(SystemMemUtilTask.class.getName());
+	// constructors
 	
 	/**
 	 * Default.
@@ -48,5 +48,4 @@ public class SystemMemUtilTask extends BaseSystemUtilTask
 		
 		return (float) memUtil;
 	}
-	
 }

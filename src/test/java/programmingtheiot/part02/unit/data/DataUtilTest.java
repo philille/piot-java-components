@@ -97,9 +97,9 @@ public class DataUtilTest
 		SystemPerformanceData data = new SystemPerformanceData();
 		data.setName(DEFAULT_NAME);
 		data.setStatusCode(DEFAULT_STATUS);
-		data.setCpuUtilization(DEFAULT_VAL);
-		data.setDiskUtilization(DEFAULT_VAL);
-		data.setMemoryUtilization(DEFAULT_VAL);
+		data.setCpuUtil(DEFAULT_VAL);
+		data.setDiskUtil(DEFAULT_VAL);
+		data.setMemUtil(DEFAULT_VAL);
 		
 		String jsonData = dataUtil.systemPerformanceDataToJson(data);
 		
@@ -109,19 +109,12 @@ public class DataUtilTest
 		
 		assertEquals(data.getName(), data2.getName());
 		assertTrue(data.getStatusCode() == data2.getStatusCode());
-		assertTrue(data.getCpuUtilization() == data2.getCpuUtilization());
-		assertTrue(data.getDiskUtilization() == data2.getDiskUtilization());
-		assertTrue(data.getMemoryUtilization() == data2.getMemoryUtilization());
+		assertTrue(data.getCpuUtil() == data2.getCpuUtil());
+		assertTrue(data.getDiskUtil() == data2.getDiskUtil());
+		assertTrue(data.getMemUtil() == data2.getMemUtil());
 	}
 	
-	/**
-	 * NOTE: SystemStateData is not required for the exercises in Programming the IoT.
-	 * The test case below is disabled by default, but can easily be re-enabled by
-	 * uncommenting the @Test attribute if SystemStateData is optionally implemented.
-	 * 
-	 */
-	
-//	@Test
+	@Test
 	public void testSystemStateDatatoJsonAndBack()
 	{
 		DataUtil dataUtil = DataUtil.getInstance();

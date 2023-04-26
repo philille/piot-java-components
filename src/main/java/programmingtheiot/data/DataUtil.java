@@ -13,6 +13,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gson.Gson;
 
 /**
@@ -22,7 +25,8 @@ import com.google.gson.Gson;
 public class DataUtil
 {
 	// static
-	
+	private static final Logger   _Logger   =
+			Logger.getLogger(DataUtil.class.getName());
 	private static final DataUtil _Instance = new DataUtil();
 
 	/**

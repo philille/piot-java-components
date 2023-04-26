@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/piot-java-components.iml" filepath="$PROJECT_DIR$/piot-java-components.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gateway-device-app.iml" filepath="$PROJECT_DIR$/gateway-device-app.iml" />
     </modules>
   </component>
 </project>

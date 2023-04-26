@@ -85,7 +85,5 @@ public interface ICloudClient
 	 */
 	public boolean setDataMessageListener(IDataMessageListener listener);
 
- 
-
-	boolean createCloudResource(ResourceNameEnum resource, ActuatorData data);
+    public boolean createCloudResource(ResourceNameEnum cdaActuatorCmdResource, ActuatorData actuatorData); 
 }

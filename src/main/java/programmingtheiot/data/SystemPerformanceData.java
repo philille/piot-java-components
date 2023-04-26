@@ -25,46 +25,47 @@ public class SystemPerformanceData extends BaseIotData implements Serializable
 	private float cpuUtil  = ConfigConst.DEFAULT_VAL;
 	private float diskUtil = ConfigConst.DEFAULT_VAL;
 	private float memUtil  = ConfigConst.DEFAULT_VAL;
-	
     
 	// constructors
 	
 	public SystemPerformanceData()
 	{
 		super();
-		
 		super.setName(ConfigConst.SYS_PERF_DATA);
 	}
 	
 	
 	// public methods
-	
-	public float getCpuUtilization()
-	{
-		return 0.0f;
+	public float getCpuUtil() {
+		return cpuUtil;
 	}
-	
-	public float getDiskUtilization()
-	{
-		return 0.0f;
+
+
+	public void setCpuUtil(float cpuUtil) {
+		this.cpuUtil = cpuUtil;
 	}
-	
-	public float getMemoryUtilization()
-	{
-		return 0.0f;
+
+
+	public float getDiskUtil() {
+		return diskUtil;
 	}
-	
-	public void setCpuUtilization(float val)
-	{
+
+
+	public void setDiskUtil(float diskUtil) {
+		this.diskUtil = diskUtil;
 	}
-	
-	public void setDiskUtilization(float val)
-	{
+
+
+	public float getMemUtil() {
+		return memUtil;
 	}
-	
-	public void setMemoryUtilization(float val)
-	{
+
+
+	public void setMemUtil(float memUtil) {
+		this.memUtil = memUtil;
 	}
+
+	
 	
 	/**
 	 * Returns a string representation of this instance. This will invoke the base class
@@ -77,9 +78,9 @@ public class SystemPerformanceData extends BaseIotData implements Serializable
 		StringBuilder sb = new StringBuilder(super.toString());
 		
 		sb.append(',');
-		sb.append(ConfigConst.CPU_UTIL_PROP).append('=').append(this.getCpuUtilization()).append(',');
-		sb.append(ConfigConst.DISK_UTIL_PROP).append('=').append(this.getDiskUtilization()).append(',');
-		sb.append(ConfigConst.MEM_UTIL_PROP).append('=').append(this.getMemoryUtilization());
+		sb.append(ConfigConst.CPU_UTIL_PROP).append('=').append(this.getCpuUtil()).append(',');
+		sb.append(ConfigConst.DISK_UTIL_PROP).append('=').append(this.getDiskUtil()).append(',');
+		sb.append(ConfigConst.MEM_UTIL_PROP).append('=').append(this.getMemUtil());
 		
 		return sb.toString();
 	}
@@ -87,11 +88,19 @@ public class SystemPerformanceData extends BaseIotData implements Serializable
 	
 	// protected methods
 	
+
+
 	/* (non-Javadoc)
 	 * @see programmingtheiot.data.BaseIotData#handleUpdateData(programmingtheiot.data.BaseIotData)
 	 */
 	protected void handleUpdateData(BaseIotData data)
 	{
+		if (data instanceof SystemPerformanceData) {
+			SystemPerformanceData spd = (SystemPerformanceData)data;
+			this.setCpuUtil(spd.getCpuUtil());
+			this.setMemUtil(spd.getMemUtil());
+			this.setDiskUtil(spd.getDiskUtil());
+		}
 	}
 	
 }

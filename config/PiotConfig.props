@@ -18,15 +18,16 @@ port           = 1883
 securePort     = 8883
 defaultQoS     = 0
 keepAlive      = 30
+enableAuth     = True
 enableCrypt    = True
-baseUrl        = https://things.ubidots.com/api/v1.6/
+baseUrl        = 
 baseTopic      = /v1.6/devices/
 
 #
 # SMTP client configuration information
 #
 [Smtp.GatewayService]
-credFile       = ./cred/PiotSmtpCred.props
+credFile       = /Users/zhanwang/programmingtheiot/cred/PiotSmtpCred.props
 host           = localhost
 port           = 25
 securePort     = 587
@@ -37,8 +38,8 @@ enableCrypt    = True
 # MQTT client configuration information
 #
 [Mqtt.GatewayService]
-credFile       = /Users/zhanwang/programmingtheiot/cred/PiotMqttCred.props
-certFile       = /Users/zhanwang/programmingtheiot/cert/server.crt
+credFile       = ./cred/PiotMqttCred.props
+certFile       = ./cert/server.pem
 host           = localhost
 port           = 1883
 securePort     = 8883
@@ -68,15 +69,16 @@ deviceLocationID        = gatewaydevice001
 enableLogging           = True
 pollCycleSecs           = 60
 enableMqttClient        = True
-enableCoapServer        = True
-enableCoapClient        = True
+enableCoapServer        = False
+enableCoapClient        = False
 enableCloudClient       = True
 enableSmtpClient        = False
 enablePersistenceClient = False
-enableSystemPerformance = False
+enableSystemPerformance = True
 testGdaDataPath         = /tmp/gda-data
 testCdaDataPath         = /tmp/cda-data
 testEmptyApp            = False
+enableRunForever		= True
 
 # if true, GDA will process humidity change events from CDA
 handleHumidityChangeOnDevice = True
@@ -88,7 +90,7 @@ humidityMaxTimePastThreshold = 10
 nominalHumiditySetting       = 40.0
 
 # min value before turning on humidifier (% relative)
-triggerHumidifierFloor       = 30.0
+triggerHumidifierFloor       = 35.0
 
 # max value before turning off humidifier (% relative)
-triggerHumidifierCeiling     = 50.0
+triggerHumidifierCeiling     = 45.0

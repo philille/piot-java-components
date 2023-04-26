@@ -19,7 +19,8 @@ import programmingtheiot.common.ConfigConst;
 import programmingtheiot.common.ConfigUtil;
 import programmingtheiot.common.IDataMessageListener;
 import programmingtheiot.common.ResourceNameEnum;
-import programmingtheiot.data.SystemPerformanceData; 
+import programmingtheiot.data.SystemPerformanceData;
+import programmingtheiot.gda.app.GatewayDeviceApp;
 
 /**
  * Shell representation of class for student implementation.
@@ -27,15 +28,16 @@ import programmingtheiot.data.SystemPerformanceData;
  */
 public class SystemPerformanceManager
 {
+	//static
+	private static final Logger _Logger =
+			Logger.getLogger(SystemPerformanceManager.class.getName());
+	
 	// private var's
 	
 	private String locationID = ConfigConst.NOT_SET;
 	private IDataMessageListener dataMsgListener = null;
-
-	private int pollRate = ConfigConst.DEFAULT_POLL_CYCLES;
-	private static final Logger _Logger =
-			Logger.getLogger(SystemPerformanceManager.class.getName());
 	
+	private int pollRate = ConfigConst.DEFAULT_POLL_CYCLES;
 	private ScheduledExecutorService schedExecSvc = null;
 	private SystemCpuUtilTask sysCpuUtilTask = null;
 	private SystemMemUtilTask sysMemUtilTask = null;
@@ -44,7 +46,6 @@ public class SystemPerformanceManager
 	private boolean isStarted = false;
 	
 	// constructors
-	
 	/**
 	 * Default.
 	 * 
@@ -79,12 +80,13 @@ public class SystemPerformanceManager
 		float cpuUtil = this.sysCpuUtilTask.getTelemetryValue();
 		float memUtil = this.sysMemUtilTask.getTelemetryValue();
 		
-		_Logger.fine("CPU utilization: " + cpuUtil + ", Mem utilization: " + memUtil);
-		
+		_Logger.info("CPU utilization: " + cpuUtil + ", Mem utilization: " + memUtil);
+//		System.out.println("cpu"+cpuUtil);
+//		System.out.println("Mem"+memUtil);
 		SystemPerformanceData spd = new SystemPerformanceData();
 		spd.setLocationID(this.locationID);
-		spd.setCpuUtilization(cpuUtil);
-		spd.setMemoryUtilization(memUtil);
+		spd.setCpuUtil(cpuUtil);
+		spd.setMemUtil(memUtil);
 		
 		if (this.dataMsgListener != null) {
 			this.dataMsgListener.handleSystemPerformanceMessage(
@@ -114,7 +116,7 @@ public class SystemPerformanceManager
 		
 		return this.isStarted;
 	}
-
+	
 	public boolean stopManager()
 	{
 		this.schedExecSvc.shutdown();
@@ -124,5 +126,4 @@ public class SystemPerformanceManager
 		
 		return true;
 	}
-	
 }

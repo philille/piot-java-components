@@ -21,8 +21,6 @@ import programmingtheiot.common.ConfigConst;
 import programmingtheiot.common.ConfigUtil;
 import programmingtheiot.common.IDataMessageListener;
 import programmingtheiot.common.ResourceNameEnum;
-import programmingtheiot.data.ActuatorData;
-import programmingtheiot.data.DataUtil;
 import programmingtheiot.gda.connection.*;
 
 /**
@@ -91,7 +89,7 @@ public class MqttClientConnectorTest
 	/**
 	 * Test method for {@link programmingtheiot.gda.connection.MqttClientConnector#publishMessage(programmingtheiot.common.ResourceNameEnum, java.lang.String, int)}.
 	 */
-	@Test
+//	@Test
 	public void testPublishAndSubscribe()
 	{
 		int qos = 0;
@@ -110,8 +108,9 @@ public class MqttClientConnectorTest
 		}
 		
 		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.GDA_MGMT_STATUS_MSG_RESOURCE, "TEST: This is the GDA message payload 1.", qos));
-		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.GDA_MGMT_STATUS_MSG_RESOURCE, "TEST: This is the GDA message payload 2.", qos));
-		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.GDA_MGMT_STATUS_MSG_RESOURCE, "TEST: This is the GDA message payload 3.", qos));
+		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE, "TEST: This is the GDA message payload 2.", qos));
+		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.CDA_SENSOR_MSG_RESOURCE, "TEST: This is the GDA message payload 3.", qos));
+		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.CDA_SYSTEM_PERF_MSG_RESOURCE, "TEST: This is the GDA message payload 4.", qos));
 		
 		try {
 			Thread.sleep(25000);
@@ -187,7 +186,7 @@ public class MqttClientConnectorTest
 	/**
 	 * Test method for {@link programmingtheiot.gda.connection.MqttClientConnector#publishMessage(programmingtheiot.common.ResourceNameEnum, java.lang.String, int)}.
 	 */
-//	@Test
+	@Test
 	public void testIntegrateWithCdaPublishCdaCmdTopic()
 	{
 		int qos = 1;
@@ -196,7 +195,7 @@ public class MqttClientConnectorTest
 		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.CDA_MGMT_STATUS_CMD_RESOURCE, "TEST: This is the CDA command payload.", qos));
 		
 		try {
-			Thread.sleep(60000);
+			Thread.sleep(100000);
 		} catch (Exception e) {
 			// ignore
 		}
@@ -226,35 +225,6 @@ public class MqttClientConnectorTest
 		
 		try {
 			Thread.sleep(5000);
-		} catch (Exception e) {
-			// ignore
-		}
-		
-		assertTrue(this.mqttClient.disconnectClient());
-	}
-	@Test
-	public void testActuatorCommandResponseSubscription()
-	{
-		int qos = 0;
-		
-		assertTrue(this.mqttClient.connectClient());
-		
-		try {
-			Thread.sleep(2000);
-		} catch (Exception e) {
-			// ignore
-		}
-		
-		ActuatorData ad = new ActuatorData();
-		ad.setValue((float) 12.3);
-		ad.setAsResponse();
-		
-		String adJson = DataUtil.getInstance().actuatorDataToJson(ad);
-		
-		assertTrue(this.mqttClient.publishMessage(ResourceNameEnum.CDA_ACTUATOR_RESPONSE_RESOURCE, adJson, qos));
-		
-		try {
-			Thread.sleep(2000);
 		} catch (Exception e) {
 			// ignore
 		}

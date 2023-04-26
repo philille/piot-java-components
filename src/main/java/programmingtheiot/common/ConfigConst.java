@@ -151,6 +151,8 @@ public class ConfigConst
 
 	// this is included here for testing purposes only
 	public static final String TEMP_SENSOR_NAME = "TempSensor";
+	public static final String HUMIDITY_SENSOR_NAME = "HumiditySensor";
+	public static final String PRESSURE_SENSOR_NAME = "PressureSensor";
 	
 	public static final String CPU_UTIL_NAME  = "CpuUtil";
 	public static final String DISK_UTIL_NAME = "DiskUtil";
@@ -269,8 +271,12 @@ public class ConfigConst
 	public static final String SMTP_PROP_ENABLE_TLS_KEY = "mail.smtp.starttls.enable";
 
 	public static final String TEST_EMPTY_APP_KEY = "testEmptyApp";
-
 	
+	public static final String HANDLE_HUMIDITY_CHANGE_ON_DEVICE = "handleHumidityChangeOnDevice";
+	public static final String HUMIDITY_MAX_TIME_PAST_THRESHOLD = "humidityMaxTimePastThreshold";
+	public static final String NOMINAL_HUMIDITY_SETTING = "nominalHumiditySetting";
+	public static final String TRIGGER_HUMIDIFIER_FLOOR = "triggerHumidifierFloor";
+	public static final String TRIGGER_HUMIDIFIER_CEILING = "triggerHumidifierCeiling";
 	// constructors
 	
 	/**

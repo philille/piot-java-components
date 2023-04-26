@@ -98,8 +98,8 @@ public class SensorDataTest
 	{
 		SystemPerformanceData spd = new SystemPerformanceData();
 		spd.setName("Foobar");
-		spd.setCpuUtilization((float) 52.5);
-		spd.setMemoryUtilization((float) 21.4);
+		spd.setCpuUtil((float) 52.5);
+		spd.setMemUtil((float) 21.4);
 		
 		SensorData ssd = new SensorData();
 		ssd.updateData(spd);

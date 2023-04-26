@@ -21,20 +21,22 @@ public class UpdateTelemetryResourceHandler extends CoapResource{
     
     private IDataMessageListener dataMsgListener = null;
     /**
-     * Constructor. 
+     * Constructor.
+     * @param resource Basically, the path (or topic)
      */
     public UpdateTelemetryResourceHandler(ResourceNameEnum resource)
     {
         this(resource.getResourceName());
     }
     /**
-     * Constructor 
+     * Constructor
+     * @param resourceName The name of the resource.
      */
     public UpdateTelemetryResourceHandler(String resourceName) 
     {
         super(resourceName);
     }
-    //Method to handle these callbacks
+    
     public void setDataMessageListener(IDataMessageListener listener)
     {
         if (listener != null) {
@@ -42,7 +44,7 @@ public class UpdateTelemetryResourceHandler extends CoapResource{
         }
     }
     
-    //Implement GET method
+    //处理来自sensor的get请求
     @Override
     public void handleGET(CoapExchange exchange) {
         ResponseCode code = ResponseCode.CONTENT;
@@ -55,10 +57,9 @@ public class UpdateTelemetryResourceHandler extends CoapResource{
         
         exchange.respond(code, sdStr);
     }
-    
-    //Implement POST method
     @Override
-    public void handlePOST(CoapExchange exchange) { 
+    public void handlePOST(CoapExchange exchange) {
+        // TODO Auto-generated method stub
         ResponseCode code = ResponseCode.NOT_ACCEPTABLE;
         
         exchange.accept();
@@ -72,28 +73,33 @@ public class UpdateTelemetryResourceHandler extends CoapResource{
             }catch (Exception e) {
                 _Logger.warning(
                         "Failed to handle POST request. Message: " +
-                            e.getMessage()); 
+                            e.getMessage());
+                //BAD_REQUEST(CodeClass.ERROR_RESPONSE, 0)
                 code = ResponseCode.BAD_REQUEST;
             }
         }else {
             _Logger.info(
-                    "No callback listener for request. Ignoring POST."); 
+                    "No callback listener for request. Ignoring POST.");
+                //CONTINUE(CodeClass.SUCCESS_RESPONSE, 31)
                 code = ResponseCode.CONTINUE;
         }
         String msg =
-                "Update telemetry data request handled: " + super.getName(); 
+                "Update telemetry data request handled: " + super.getName();
+        //do response
         exchange.respond(code, msg);
     }
-    
-  //Implement DELETE method
     @Override
-    public void handleDELETE(CoapExchange exchange) { 
+    public void handleDELETE(CoapExchange exchange) {
+        // TODO Auto-generated method stub
         super.handleDELETE(exchange);
     }
-    
-  //Implement PUT method
+    /**
+     * 这个是用来处理sensor发送到gateway的sensor数据
+     * 要put到gateway
+     */
     @Override
-    public void handlePUT(CoapExchange exchange) { 
+    public void handlePUT(CoapExchange exchange) {
+        //NOT_ACCEPTABLE(CodeClass.ERROR_RESPONSE, 6)
         ResponseCode code = ResponseCode.NOT_ACCEPTABLE;
         
         exchange.accept();
@@ -119,12 +125,14 @@ public class UpdateTelemetryResourceHandler extends CoapResource{
             }
         }else {
             _Logger.info(
-                "No callback listener for request. Ignoring PUT."); 
+                "No callback listener for request. Ignoring PUT.");
+            //CONTINUE(CodeClass.SUCCESS_RESPONSE, 31)
             code = ResponseCode.CONTINUE;
         }
         
         String msg =
-                "Update telemetry data request handled: " + super.getName(); 
+                "Update telemetry data request handled: " + super.getName();
+        //do response
         exchange.respond(code, msg);
     }
 }

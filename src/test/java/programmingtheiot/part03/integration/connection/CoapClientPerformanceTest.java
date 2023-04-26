@@ -94,9 +94,9 @@ public class CoapClientPerformanceTest
 	// test methods
 	
 	/**
-	 * 
+	 * POST message - useCON = true [10000]: 6275 ms
 	 */
-	@Test
+//	@Test
 	public void testPostRequestCon()
 	{
 		_Logger.info("Testing POST - CON");
@@ -105,9 +105,9 @@ public class CoapClientPerformanceTest
 	}
 	
 	/**
-	 * 
+	 *  POST message - useCON = false [10000]: 7400 ms
 	 */
-	@Test
+//	@Test
 	public void testPostRequestNon()
 	{
 		_Logger.info("Testing POST - NON");
@@ -116,9 +116,9 @@ public class CoapClientPerformanceTest
 	}
 	
 	/**
-	 * 
+	 * PUT message - useCON = true [10000]: 10366 ms
 	 */
-	@Test
+//	@Test
 	public void testPutRequestCon()
 	{
 		_Logger.info("Testing PUT - CON");
@@ -127,7 +127,7 @@ public class CoapClientPerformanceTest
 	}
 	
 	/**
-	 * 
+	 * PUT message - useCON = false [10000]: 8439 ms
 	 */
 	@Test
 	public void testPutRequestNon()

@@ -25,7 +25,8 @@ public class ActuatorData extends BaseIotData implements Serializable
 	private int     command      = ConfigConst.DEFAULT_COMMAND;
 	private float   value        = ConfigConst.DEFAULT_VAL;
 	private boolean isResponse   = false;
-	private String  stateData    = ""; 
+	private String  stateData    = "";
+    
     
 	// constructors
 	
@@ -41,43 +42,43 @@ public class ActuatorData extends BaseIotData implements Serializable
 	
 	// public methods
 	
-	public int getCommand()
-	{
+	public int getCommand() {
 		return command;
 	}
-	
-	public float getValue() {
-		return value;
-	}
-	
-	public boolean isResponseFlagEnabled()
-	{
-		return false;
-	}
-	
-	public void setAsResponse()
-	{
-	}
-	
+
+
 	public void setCommand(int command) {
 		this.command = command;
 	}
-	
+
+
+	public float getValue() {
+		return value;
+	}
+
+
 	public void setValue(float value) {
 		this.value = value;
 	}
-	
-	private String getStateData() {
-		// TODO Auto-generated method stub
-		return stateData;
-	} 
-	
-	public void setStateData(String stateData) {
-		this.stateData = stateData;
-	}
-	
+
+
 	public boolean isResponse() {
 		return isResponse;
+	}
+
+
+	public void setResponse(boolean isResponse) {
+		this.isResponse = isResponse;
+	}
+
+
+	public String getStateData() {
+		return stateData;
+	}
+
+
+	public void setStateData(String stateData) {
+		this.stateData = stateData;
 	}
 	
 	/**
@@ -92,7 +93,7 @@ public class ActuatorData extends BaseIotData implements Serializable
 		
 		sb.append(',');
 		sb.append(ConfigConst.COMMAND_PROP).append('=').append(this.getCommand()).append(',');
-		sb.append(ConfigConst.IS_RESPONSE_PROP).append('=').append(this.isResponseFlagEnabled()).append(',');
+		sb.append(ConfigConst.IS_RESPONSE_PROP).append('=').append(this.isResponse()).append(',');
 		sb.append(ConfigConst.VALUE_PROP).append('=').append(this.getValue());
 		
 		return sb.toString();
@@ -100,11 +101,12 @@ public class ActuatorData extends BaseIotData implements Serializable
 	
 	
 	// protected methods
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see programmingtheiot.data.BaseIotData#handleUpdateData(programmingtheiot.data.BaseIotData)
 	 */
-
 	protected void handleUpdateData(BaseIotData data)
 	{
 		if (data instanceof ActuatorData) {
@@ -117,6 +119,5 @@ public class ActuatorData extends BaseIotData implements Serializable
 			}
 		}
 	}
-
 	
 }
